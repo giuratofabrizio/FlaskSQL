@@ -1,11 +1,27 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
 
 
 
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('search.html')
+    return render_template('radio.html')
+
+
+@app.route("/select", methods=["GET"])
+def elenco():
+    scelta= request.args["scelta"]
+
+    if scelta == "es1":
+        return redirect(url_for("es1"))
+    elif scelta == "es2":
+        return render_template("es2.html")
+    elif scelta == "es3":
+        return render_template("es3.html")
+    elif scelta == "es4":
+        return render_template("search.html")
+
+
 
 
 @app.route('/result', methods=['GET'])
@@ -26,7 +42,11 @@ def result():
 
 
 
-
+@app.route("/es1", methods=["GET"])
+def es1():
+    query = f'SELECT category_name, count(*) as numero_prodotti FROM production.products inner join production.categories on categories.category_id = products.category_id group by category_name'
+    dfCategorie = pd.read_sql(query,conn)
+    return render_template('es1.html', nomiColonne = dfCategorie.columns.values, dati = list(dfCategorie.values.tolist()))
 
 
 if __name__ == '__main__':
