@@ -1,0 +1,116 @@
+﻿Correzione Verifica 3
+
+
+1-
+select avg(valutazione)
+from guarda where
+id_ep = (select id from episodio where nome= ‘la scatola del bravo ragazzo
+ and id_serie =(select id from serie where nome= ‘Dahmer’))’
+
+
+2- elenco serie tv con numero episodi
+select serie_tv.nome, count(*)
+from serie_tv inner join episodio
+on serie_tv.id = episodio=id_serie
+group by serie_tv.id, serie_tv.nome
+
+
+3- nome e cognome utenti che hanno guardato più di 100 episodi
+select utente.nome, utente.cognome, count(*) as numero_episodi
+from utente inner join visualizza 
+on utente.id= visualizza.id_utente
+group by utente.id, utente.nome, utente.cognome
+having count(*) >100
+order by numero_episodi desc
+
+
+4- utenti che hanno guardato episodi di più di 10 serie diverse
+select utente.id, utente.nome, utente.cognome, count(serie.id) as serieviste
+from utente inner join visualizza
+on utente.id = visualizza.id_utente
+inner join episodio
+on episodio.id = visualizza.id_episodio
+inner join serie
+on serie.id= episodio.id_serie
+group by utente.id, utente.nome, utente.cognome
+having count(serie.id)>=10
+
+
+5-.elenco utenti che nell’ultimo mese non hanno guardato Dahmer
+select * from utente
+where utente.id not in
+(select utente.id from utente inner join visualizza
+on utente.id= visualizza.id_utente
+inner join episodio
+on episodio.id = visualizza.id_episodio
+inner join serie
+on serie.id=episodio.id_serie
+where serie.nome= ‘Dahmer’ 
+and visualizza.data between ‘2022-09-20’ and ‘2022-10-20’)
+[and datediff (day, visualizza.date, visualizza.data,getdate()) < 30)]
+
+
+
+
+6- avere l’elenco delle serie di genere drammatico e fantascientifico(prima fs e poi dramm)
+select  * from serie
+inner join appartiene
+on serie.id = appartiene.id_serie
+inner join genere
+on genere.id = appartiere.id_genere
+where genere .nome = "drammatico" or genere.nome=”fantascienza”
+order by genere.nome desc, serie.nome
+
+
+7- avere l’elenco degli episodi (titolo e serie) dove ha recitato Flavio Nedina
+select episodio.titolo, serie.nome from attore
+inner join recita
+on attore.id = recita.id_attore
+inner join episodio
+on episodio.id = recita.id_episodio
+inner join serie
+on serie.id = episodio.id_serie
+where attore.nome= ‘Flavio’ and attore.cognome= ‘Nedina’
+
+
+7.1- avere l'elenco delle serie in cui compare la parola “the” all’inizio del nome della serie
+select * from serie
+where nome like “the %”
+
+
+8- avere il numero di utenti che hanno guardato episodi nel settembre del 2022
+select * from utente 
+inner join visualizza 
+on utente.id = visualizza.id_utente
+where visualizza.data between ‘2022-09-01’ and ‘2022-09-30’
+
+
+9 - creare una tabella che rappresenta un’entità
+create table genere(
+id int identity(0,1) primary key,
+nome varchar(50)
+)
+
+
+10- creare una tabella che rappresenta una relazione collegata all’entità precedente
+create table appartiene(
+id_serie int foreign key references serie(id)
+id_genere int foreign key references genere(id)
+)
+
+
+11- aggiungere campo numero di telefono all’utente
+alter table utente
+add telefono varchar(20)
+
+
+
+
+
+
+12- eliminare l’attributo sesso dall’utente
+alter table utente 
+drop column sesso
+
+
+13- eliminare gli utenti a cui è scaduto l’abbonamento
