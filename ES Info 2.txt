@@ -1,0 +1,95 @@
+﻿Scrivere le istruzioni SQL per estrarre le seguenti informazioni:
+
+
+1. il numero di prodotti per ogni brand
+
+
+select brand_name, count(*) as totale_prodotti from production.products
+inner join production.brands
+on production.products.brand_id=production.brands.brand_id
+group by brand_name
+
+
+2. i brand che hanno più di 10 prodotti
+
+
+select brand_name, count(*) as totaleprodotti from production.products
+inner join production.brands
+on production.products.brand_id=production.brands.brand_id
+group by brand_name
+having count(*) > 10
+
+
+3. il prezzo massimo dei prodotti di ogni brand
+
+
+select brand_name, max(list_price) as totaleclienti from production.products
+inner join production.brands
+on production.products.brand_id=production.brands.brand_id
+group by brand_name
+
+
+4. il prezzo medio dei prodotti di ogni brand
+
+
+select brand_name, avg(list_price) as totaleclienti from production.products
+inner join production.brands
+on production.products.brand_id=production.brands.brand_id
+group by brand_name
+
+
+5. il brand del prodotto che costa di più
+
+
+select brand_name as totaleclienti from production.products
+inner join production.brands
+on production.products.brand_id=production.brands.brand_id
+where list_price=
+(select max(list_price) as prezzomax from production.products)
+
+
+6. la categoria del prodotto che costa di meno
+
+
+select category_name from production.products
+inner join production.brands
+on production.products.brand_id=production.brands.brand_id
+inner join production.categories
+on production.products.category_id=production.categories.category_id
+where list_price=
+(select min(list_price) as prezzomax from production.products)
+
+
+
+
+7. il nome, il brand e la categoria dei prodotti che costano più della media
+
+
+inner join production.brands
+on production.products.brand_id=production.brands.brand_id
+inner join production.categories
+on production.products.category_id=production.categories.category_id
+where list_price >
+(select avg(list_price) from production.products )
+
+
+8. i clienti di cui non si conosce il numero di telefono
+
+
+select first_name, last_name from sales.customers
+where phone is null
+
+
+9. il brand con più prodotti
+
+
+select brand_name, count(*) as totaleclienti from production.products
+inner join production.brands
+on production.products.brand_id=production.brands.brand_id
+group by brand_name
+having count(*)=(
+select max(totaleclienti) from
+(select brand_name, count(*) as totaleclienti from production.products
+inner join production.brands
+on production.products.brand_id=production.brands.brand_id
+group by brand_name) as t)
