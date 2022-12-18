@@ -1,0 +1,38 @@
+﻿aggiungere colonna:
+alter table nometabella
+add column nomecolonna
+
+
+
+
+rimuovere colonna:
+alter table nometabella
+drop column nomecolonna
+
+
+
+
+modifica nome colonna:
+alter table nometabella
+rename column nomecolonna to nome
+
+
+
+
+modifica tipo dati colonna
+alter table nometabella
+alter column nomecolonna nometipodati
+
+
+ 
+elimina valori della colonna dove… : 
+delete from nometabella
+where nomecolonna = valore
+
+
+aumentare o decrementare valori 
+
+
+update nometabella
+set nomecolonna = nomecolonna * n
+(where…)
